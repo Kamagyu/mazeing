@@ -156,6 +156,8 @@ int main(void)
     SetTargetFPS(60);
 
     int max_dist = 0;
+    int trav[mazeSize][mazeSize];
+    bool traversed = false;
     while (!WindowShouldClose())   
     {
         BeginDrawing();
@@ -163,22 +165,23 @@ int main(void)
         ClearBackground(RAYWHITE);
         draw_maze(maze, BLACK);
 
-        int trav[mazeSize][mazeSize];
+        
         int clock = 0;
-        reset_traversal(trav);
-
+        
         int start_point[2];
         
         if (IsMouseButtonDown(0)) {
             int x_f = mazeSize*GetMouseX()/screenWidth;
             int y_f = mazeSize*GetMouseY()/screenHeight;
             if (!maze[x_f][y_f]) {
+                reset_traversal(trav);
                 // max_dist = dfs(x_f, y_f, maze, trav, &clock);
                 max_dist = bfs(x_f, y_f, maze, trav);
+                traversed = true;
             }
         }
         
-        draw_traversal(trav, max_dist);
+        if (traversed) draw_traversal(trav, max_dist);
         EndDrawing();
     }
 
