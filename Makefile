@@ -12,10 +12,12 @@ LIBS = -lraylib -lm -lpthread -ldl -lrt -lX11
 
 TARGET = $(BUILD_DIR)/$(NAME)
 
+SIZE ?= 800
+
 all: $(TARGET)
 
 run: $(TARGET)
-	./$(TARGET)
+	./$(TARGET) $(SIZE)
 
 $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET) $(LIBS)

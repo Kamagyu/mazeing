@@ -3,17 +3,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-
 #include "maze.h"
 
 #define maze_size 32
 
-const int screen_width = 1000;
-const int screen_height = 1000;
-
-// Trick to prevent
-const int tileWidth = (screen_width + maze_size - 1)/maze_size;
-const int tileHeight = (screen_height+ maze_size - 1)/maze_size;
+int screen_width;
+int screen_height;
+int tileWidth;
+int tileHeight;
  
 void draw_tile(int x, int y, Color color) {
     assert(x < maze_size && y < maze_size);
@@ -116,8 +113,21 @@ int bfs(int sx, int sy, int maze[maze_size][maze_size], int d[maze_size][maze_si
     return max;
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    if (argc > 1) {
+        int size = atoi(argv[1]);
+        screen_width = size;
+        screen_height = size;
+    } else { // Default value also handled in Makefile
+        int size = 800;
+        screen_width = size;
+        screen_height = size;
+    }
+
+    tileWidth = (screen_width + maze_size - 1)/maze_size;
+    tileHeight = (screen_height + maze_size - 1)/maze_size;
+
     InitWindow(screen_width, screen_height, "(A)Mazeing!");
     SetTargetFPS(60);
 
