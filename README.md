@@ -1,4 +1,4 @@
-# Mazeing
+# (A)-mazeing
 
 A visualization of graphs traversal applied to mazes made with raylib that can generate mazes of various density.
 It currently implements Depth-First Search and Breadth-First Search.
