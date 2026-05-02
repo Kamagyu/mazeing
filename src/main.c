@@ -11,8 +11,9 @@
 const int screen_width = 1000;
 const int screen_height = 1000;
 
-const int tileWidth = screen_width/maze_size;
-const int tileHeight = screen_height/maze_size;
+// Trick to prevent
+const int tileWidth = (screen_width + maze_size - 1)/maze_size;
+const int tileHeight = (screen_height+ maze_size - 1)/maze_size;
  
 void draw_tile(int x, int y, Color color) {
     assert(x < maze_size && y < maze_size);
