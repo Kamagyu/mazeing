@@ -201,7 +201,9 @@ int main(int argc, char **argv)
         if (traversed) draw_traversal(trav, max_dist);
         EndDrawing();
 
-        if (IsKeyPressed(KEY_R)) {
+        // Press [R] to regenerate once
+        // Hold [Shift + R] to regenerate continuously
+        if (IsKeyPressed(KEY_R) ^ (IsKeyDown(KEY_LEFT_SHIFT) && IsKeyDown(KEY_R)) ) {
             double p = 0.75 * (float)arc4random() / UINT_MAX;
             create_maze(maze, p*p*p);
             traversed = false;
