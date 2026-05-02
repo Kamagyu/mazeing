@@ -93,6 +93,7 @@ int main(int argc, char **argv)
 
         if (IsKeyPressed(KEY_TAB)) {
             traversal = (traversal + 1) % TRAV_COUNT;
+            reset_traversal(trav);
         }
 
         if (IsKeyPressed(KEY_S)) {
