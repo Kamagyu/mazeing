@@ -3,9 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include "maze.h"
 
-#define maze_size 32
+#define maze_size 29
 
 int screen_width;
 int screen_height;
@@ -23,9 +22,7 @@ void draw_maze(int mat[maze_size][maze_size], Color color) {
             if (mat[i][j]) {
                 draw_tile(i, j, color);
             }
-
         }
-
     }
 }
 
@@ -40,6 +37,43 @@ void draw_traversal(int trav[maze_size][maze_size], int max_dist) {
         }
 
     }
+}
+
+void carve(int maze[maze_size][maze_size], int x, int y) {
+    int dx[] = {0, 0, -2, 2};
+    int dy[] = {-2, 2, 0, 0};
+
+    int order[] = {0, 1, 2, 3};
+    for (int i = 3; i > 0; i--) {
+        int j = arc4random_uniform(i+1);
+        int tmp = order[i];
+        order[i] = order[j];
+        order[j] = tmp;
+    }
+
+    for (int d = 0; d < 4; d++) {
+        int nx = x + dx[order[d]];
+        int ny = y + dy[order[d]];
+
+        if (nx < 0 || ny < 0 || nx >= maze_size || ny >= maze_size) continue;
+        if (maze[nx][ny] != 2) continue;
+
+        maze[x + dx[order[d]]/2][y + dy[order[d]]/2] = 0;
+        maze[nx][ny] = 0;
+
+        carve(maze, nx, ny);
+    }
+}
+
+void create_maze(int maze[maze_size][maze_size]) {
+    assert(maze_size % 2 == 1);
+
+    for (int i = 0; i < maze_size; i++)
+        for (int j = 0; j < maze_size; j++)
+            maze[i][j] = (i % 2 == 1 && j % 2 == 1) ? 2 : 1;
+
+    maze[1][1] = 0;
+    carve(maze, 1, 1);
 }
 
 void reset_traversal(int trav[maze_size][maze_size]) {
@@ -124,6 +158,8 @@ int main(int argc, char **argv)
         screen_width = size;
         screen_height = size;
     }
+    int maze[maze_size][maze_size];
+    create_maze(maze);
 
     tileWidth = (screen_width + maze_size - 1)/maze_size;
     tileHeight = (screen_height + maze_size - 1)/maze_size;
