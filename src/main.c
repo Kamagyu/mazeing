@@ -192,6 +192,12 @@ int main(int argc, char **argv)
         
         if (traversed) draw_traversal(trav, max_dist);
         EndDrawing();
+
+        if (IsKeyPressed(KEY_R)) {
+            create_maze(maze);
+            traversed = false;
+        }
+
     }
 
     CloseWindow();
