@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define maze_size 51
+#define maze_size 101
 
 int screen_width;
 int screen_height;
@@ -31,7 +31,9 @@ void draw_traversal(int trav[maze_size][maze_size], int max_dist) {
         for (int j = 0; j < maze_size; j++) {
             if (trav[i][j] == -1) continue;
             float l = (float)trav[i][j] / max_dist;
-            Color c = ColorFromHSV(150*(1-l) + 0*l, 1., 1.);
+            float hue = 60. - l * (60. + 90.);
+            if (hue < 0) hue += 360.;
+            Color c = ColorFromHSV(hue, 1., 1.);
             draw_tile(i, j, c);
 
         }
@@ -178,6 +180,9 @@ int main(int argc, char **argv)
     int max_dist = 0;
     int trav[maze_size][maze_size];
     bool traversed = false;
+
+    printf("Starting!\n");
+
     while (!WindowShouldClose())   
     {
         BeginDrawing();
