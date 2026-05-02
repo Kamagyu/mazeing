@@ -4,10 +4,10 @@ CC = gcc
 SRC_DIR = src
 BUILD_DIR = build
 
-SRC = $(SRC_DIR)/main.c
+SRC = $(wildcard $(SRC_DIR)/*.c)
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
-CFLAGS = -Wall -Wextra -O2
+CFLAGS = -Wall -Wextra -O2 -Iinclude
 LIBS = -lraylib -lm -lpthread -ldl -lrt -lX11
 
 TARGET = $(BUILD_DIR)/$(NAME)
