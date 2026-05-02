@@ -1,6 +1,7 @@
 # (A)-mazeing
 
-A visualization of graphs traversal applied to mazes made with raylib that can generate mazes of various density.
+A visualization of graph traversals applied to mazes made with [raylib](https://www.raylib.com/) that can generate mazes of various density.
+
 It currently implements Depth-First Search and Breadth-First Search.
 
 <p align="center">
@@ -14,7 +15,7 @@ It currently implements Depth-First Search and Breadth-First Search.
 - You can choose the size of the maze by changing the `MAZE_SIZE` macro. **It needs to be an odd number.**
 - You can change the size of the window with `./build/main [window_size]` or `make run SIZE=[window_size]`. Doing this way will only create square windows.
 - Click on any blank tile to show the distance to every other accessible tile.
-- Press `r` to regenerate the maze with a random density of walls
+- Press `r` to regenerate the maze with a random density of walls.
 - You can also hold `shift + r` to regenerate continuously 60 times/sec (epilepsy warning).
 - Press `tab` to cycle through the traversal algorithms.
-- Press `s` to hide/show the text.
+- Press `s` to toggle the text.
