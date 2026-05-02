@@ -4,22 +4,24 @@
 #include <stdio.h>
 #include <assert.h>
 
-const int screenWidth = 1000;
-const int screenHeight = 1000;
-const int mazeSize = 32;
+#include "maze.h"
 
-const int tileWidth = screenWidth/mazeSize;
-const int tileHeight = screenHeight/mazeSize;
+#define maze_size 32
+
+const int screen_width = 1000;
+const int screen_height = 1000;
+
+const int tileWidth = screen_width/maze_size;
+const int tileHeight = screen_height/maze_size;
  
-
 void draw_tile(int x, int y, Color color) {
-    assert(x < mazeSize && y < mazeSize);
+    assert(x < maze_size && y < maze_size);
     DrawRectangle(x * tileWidth, y * tileHeight, tileWidth, tileHeight, color);
 }
 
-void draw_maze(int mat[mazeSize][mazeSize], Color color) {
-    for (int i = 0; i < mazeSize; i++) {
-        for (int j = 0; j < mazeSize; j++) {
+void draw_maze(int mat[maze_size][maze_size], Color color) {
+    for (int i = 0; i < maze_size; i++) {
+        for (int j = 0; j < maze_size; j++) {
             if (mat[i][j]) {
                 draw_tile(i, j, color);
             }
@@ -29,11 +31,9 @@ void draw_maze(int mat[mazeSize][mazeSize], Color color) {
     }
 }
 
-void draw_traversal(int trav[mazeSize][mazeSize], int max_dist) {
-
-
-    for (int i = 0; i < mazeSize; i++) {
-        for (int j = 0; j < mazeSize; j++) {
+void draw_traversal(int trav[maze_size][maze_size], int max_dist) {
+    for (int i = 0; i < maze_size; i++) {
+        for (int j = 0; j < maze_size; j++) {
             if (trav[i][j] == -1) continue;
             float l = (float)trav[i][j] / max_dist;
             Color c = ColorFromHSV(150*(1-l) + 0*l, 1., 1.);
@@ -44,15 +44,15 @@ void draw_traversal(int trav[mazeSize][mazeSize], int max_dist) {
     }
 }
 
-void reset_traversal(int trav[mazeSize][mazeSize]) {
-    for (int i = 0; i < mazeSize; i++){
-        for (int j = 0; j < mazeSize; j++) {
+void reset_traversal(int trav[maze_size][maze_size]) {
+    for (int i = 0; i < maze_size; i++){
+        for (int j = 0; j < maze_size; j++) {
             trav[i][j] = -1;
         }
     }
 }
 
-int dfs(int x, int y, int maze[mazeSize][mazeSize], int visited[mazeSize][mazeSize], int *clock) {
+int dfs(int x, int y, int maze[maze_size][maze_size], int visited[maze_size][maze_size], int *clock) {
     if (visited[x][y] == -1) {
         (*clock)++;
         visited[x][y] = *clock;
@@ -64,7 +64,7 @@ int dfs(int x, int y, int maze[mazeSize][mazeSize], int visited[mazeSize][mazeSi
             int nx = x + dx[k];
             int ny = y + dy[k];
 
-            if (nx < 0 || nx >= mazeSize || ny < 0 || ny >= mazeSize) continue;
+            if (nx < 0 || nx >= maze_size || ny < 0 || ny >= maze_size) continue;
 
             if (maze[nx][ny] == 0) {
                 dfs(nx, ny, maze, visited, clock);
@@ -74,12 +74,12 @@ int dfs(int x, int y, int maze[mazeSize][mazeSize], int visited[mazeSize][mazeSi
     return *clock;
 }
 
-int bfs(int sx, int sy, int maze[mazeSize][mazeSize], int d[mazeSize][mazeSize]) {
-    for (int i = 0; i < mazeSize; i++)
-        for (int j = 0; j < mazeSize; j++)
+int bfs(int sx, int sy, int maze[maze_size][maze_size], int d[maze_size][maze_size]) {
+    for (int i = 0; i < maze_size; i++)
+        for (int j = 0; j < maze_size; j++)
             d[i][j] = -1;
 
-    int queue[mazeSize * mazeSize][2];
+    int queue[maze_size * maze_size][2];
     int head = 0, tail = 0;
 
     d[sx][sy] = 0;
@@ -100,7 +100,7 @@ int bfs(int sx, int sy, int maze[mazeSize][mazeSize], int d[mazeSize][mazeSize])
             int nx = x + dx[dir];
             int ny = y + dy[dir];
 
-            if (nx < 0 || ny < 0 || nx >= mazeSize || ny >= mazeSize) continue;
+            if (nx < 0 || ny < 0 || nx >= maze_size || ny >= maze_size) continue;
             if (maze[nx][ny] == 1) continue;
             if (d[nx][ny] != -1) continue;
 
@@ -117,62 +117,24 @@ int bfs(int sx, int sy, int maze[mazeSize][mazeSize], int d[mazeSize][mazeSize])
 
 int main(void)
 {
-    int maze[32][32] = {
-{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-{1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1},
-{1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1},
-{1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1},
-{1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,0,1,1},
-{1,0,1,0,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,1},
-{1,0,1,0,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,0,1,1,1,0,1,0,1,1,0,1},
-{1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,1},
-{1,0,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1},
-{1,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1},
-{1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,1},
-{1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1},
-{1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,1,1,0,1,1,1,0,1,1,1,1,1,1,0,1},
-{1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,1},
-{1,1,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,0,1,1},
-{1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1},
-{1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
-{1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
-{1,1,1,0,0,0,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1},
-{1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1},
-{1,0,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,1,0,1},
-{1,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1},
-{1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,1},
-{1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1},
-{1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,1,0,1},
-{1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1},
-{1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,1},
-{1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,1},
-{1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,0,1,0,1,1,1,0,1,1,1,1,1,1,0,1},
-{1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,1},
-{1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,1},
-{1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1},
-};
-
-    InitWindow(screenWidth, screenHeight, "(A)Mazeing!");
+    InitWindow(screen_width, screen_height, "(A)Mazeing!");
     SetTargetFPS(60);
 
     int max_dist = 0;
-    int trav[mazeSize][mazeSize];
+    int trav[maze_size][maze_size];
     bool traversed = false;
     while (!WindowShouldClose())   
     {
         BeginDrawing();
-
         ClearBackground(RAYWHITE);
         draw_maze(maze, BLACK);
 
-        
-        int clock = 0;
-        
+        int clock = 0;        
         int start_point[2];
         
         if (IsMouseButtonDown(0)) {
-            int x_f = mazeSize*GetMouseX()/screenWidth;
-            int y_f = mazeSize*GetMouseY()/screenHeight;
+            int x_f = maze_size*GetMouseX()/screen_width;
+            int y_f = maze_size*GetMouseY()/screen_height;
             if (!maze[x_f][y_f]) {
                 reset_traversal(trav);
                 // max_dist = dfs(x_f, y_f, maze, trav, &clock);
@@ -186,5 +148,5 @@ int main(void)
     }
 
     CloseWindow();
-    return 0;
+    return EXIT_SUCCESS;
 }
