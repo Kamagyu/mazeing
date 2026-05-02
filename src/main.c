@@ -1,8 +1,6 @@
 #include <limits.h>
-#include <raylib.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 
 #include "maze.h"
 #include "traversal.h"
