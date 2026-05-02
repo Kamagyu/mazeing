@@ -1,3 +1,4 @@
+#include <limits.h>
 #include <raylib.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -73,6 +74,47 @@ int dfs(int x, int y, int maze[mazeSize][mazeSize], int visited[mazeSize][mazeSi
     return *clock;
 }
 
+int bfs(int sx, int sy, int maze[mazeSize][mazeSize], int d[mazeSize][mazeSize]) {
+    for (int i = 0; i < mazeSize; i++)
+        for (int j = 0; j < mazeSize; j++)
+            d[i][j] = -1;
+
+    int queue[mazeSize * mazeSize][2];
+    int head = 0, tail = 0;
+
+    d[sx][sy] = 0;
+    queue[tail][0] = sx;
+    queue[tail][1] = sy;
+    tail++;
+
+    int dx[] = {0, 0, 1, -1};
+    int dy[] = {1, -1, 0, 0};
+    int max = 0;
+
+    while (head < tail) {
+        int x = queue[head][0];
+        int y = queue[head][1];
+        head++;
+
+        for (int dir = 0; dir < 4; dir++) {
+            int nx = x + dx[dir];
+            int ny = y + dy[dir];
+
+            if (nx < 0 || ny < 0 || nx >= mazeSize || ny >= mazeSize) continue;
+            if (maze[nx][ny] == 1) continue;
+            if (d[nx][ny] != -1) continue;
+
+            d[nx][ny] = d[x][y] + 1;
+            if (d[nx][ny] > max) max = d[nx][ny];
+            queue[tail][0] = nx;
+            queue[tail][1] = ny;
+            tail++;
+        }
+    }
+
+    return max;
+}
+
 int main(void)
 {
     int maze[32][32] = {
@@ -131,7 +173,8 @@ int main(void)
             int x_f = mazeSize*GetMouseX()/screenWidth;
             int y_f = mazeSize*GetMouseY()/screenHeight;
             if (!maze[x_f][y_f]) {
-                max_dist = dfs(x_f, y_f, maze, trav, &clock);
+                // max_dist = dfs(x_f, y_f, maze, trav, &clock);
+                max_dist = bfs(x_f, y_f, maze, trav);
             }
         }
         
