@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define maze_size 29
+#define maze_size 51
 
 int screen_width;
 int screen_height;
@@ -65,7 +65,7 @@ void carve(int maze[maze_size][maze_size], int x, int y) {
     }
 }
 
-void create_maze(int maze[maze_size][maze_size]) {
+void create_maze(int maze[maze_size][maze_size], double open_percentage) {
     assert(maze_size % 2 == 1);
 
     for (int i = 0; i < maze_size; i++)
@@ -74,6 +74,14 @@ void create_maze(int maze[maze_size][maze_size]) {
 
     maze[1][1] = 0;
     carve(maze, 1, 1);
+
+    for (int i = 1; i < maze_size - 1; i++) {
+        for (int j = 1; j < maze_size - 1; j++) {
+            if (i % 2 != j % 2) {
+                maze[i][j] &= ((float)arc4random()/UINT_MAX) > open_percentage;            
+            }
+        }
+    }
 }
 
 void reset_traversal(int trav[maze_size][maze_size]) {
@@ -159,7 +167,7 @@ int main(int argc, char **argv)
         screen_height = size;
     }
     int maze[maze_size][maze_size];
-    create_maze(maze);
+    create_maze(maze, 0.);
 
     tileWidth = (screen_width + maze_size - 1)/maze_size;
     tileHeight = (screen_height + maze_size - 1)/maze_size;
@@ -194,7 +202,8 @@ int main(int argc, char **argv)
         EndDrawing();
 
         if (IsKeyPressed(KEY_R)) {
-            create_maze(maze);
+            double p = 0.75 * (float)arc4random() / UINT_MAX;
+            create_maze(maze, p*p*p);
             traversed = false;
         }
 
