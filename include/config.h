@@ -1,7 +1,10 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define maze_size 601
+// May be overwritten by the -MSIZE flag using make run
+#ifndef maze_size
+#define maze_size 201
+#endif
 
 extern int screen_width;
 extern int screen_height;

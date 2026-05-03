@@ -4,20 +4,25 @@ CC = gcc
 SRC_DIR = src
 BUILD_DIR = build
 
-SRC = $(wildcard $(SRC_DIR)/*.c)
-OBJ = $(SRC:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
+WSIZE ?= 800
+MSIZE ?= 51
 
-CFLAGS = -Wall -Wextra -O2 -Iinclude
+SRC= $(wildcard $(SRC_DIR)/*.c)
+OBJ:= $(SRC:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
+
+CFLAGS = -Wall -Wextra -O2 -Iinclude -Dmaze_size=$(MSIZE)
 LIBS = -lraylib -lm -lpthread -ldl -lrt -lX11
 
 TARGET = $(BUILD_DIR)/$(NAME)
 
-SIZE ?= 800
+all: clean $(TARGET)
+	./$(TARGET) $(WSIZE)
 
-all: $(TARGET)
+clean:
+	rm -rf $(BUILD_DIR)
 
 run: $(TARGET)
-	./$(TARGET) $(SIZE)
+	./$(TARGET) $(WSIZE)
 
 $(TARGET): $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET) $(LIBS)
@@ -26,7 +31,6 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-clean:
-	rm -rf $(BUILD_DIR)
+
 
 .PHONY: all run clean
